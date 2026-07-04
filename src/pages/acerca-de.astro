@@ -1,0 +1,223 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Acerca de — Cactus Byte Studio" 
+  title_en="About Me — Cactus Byte Studio"
+  description="Conocé la historia detrás de Cactus Byte Studio, un estudio unipersonal de videojuegos y chiptune."
+  description_en="Discover the story behind Cactus Byte Studio, a solo developer and chiptune musician."
+>
+  <h1 class="section-title">
+    <span class="lang-es">Acerca de mí</span>
+    <span class="lang-en">About Me</span>
+  </h1>
+
+  <div class="about-grid">
+    <div class="pixel-box about-main-box">
+      <div class="avatar-wrapper">
+        <img src="/images/logo.png" alt="Cactus Byte Studio Avatar" class="about-avatar" />
+      </div>
+      <div class="bio-text">
+        <h2>
+          <span class="lang-es">Detrás del Cactus</span>
+          <span class="lang-en">Behind the Cactus</span>
+        </h2>
+        
+        <p class="lang-es">
+          ¡Hola! Soy el desarrollador, diseñador y músico unipersonal detrás de <strong>Cactus Byte Studio</strong>. 
+          Este proyecto nació de mi fascinación por la tecnología retro y los límites impuestos por el hardware clásico, 
+          los cuales obligaban a los creadores a resolver problemas con pura creatividad.
+        </p>
+        <p class="lang-en">
+          Hello! I am the solo developer, designer, and musician behind <strong>Cactus Byte Studio</strong>. 
+          This project was born out of my fascination with retro technology and the constraints imposed by classic hardware, 
+          which forced creators to solve problems with pure creativity.
+        </p>
+        
+        <p class="lang-es">
+          Desde chico me interesó cómo funcionaban los videojuegos, lo que me llevó a estudiar programación y 
+          experimentar con motores como Godot y Unity. Paralelamente, mi amor por la música me llevó al mundo del 
+          <strong>Chiptune</strong>, componiendo temas musicales directamente en consolas portátiles clásicas.
+        </p>
+        <p class="lang-en">
+          Since I was a kid, I have been interested in how video games work, which led me to study programming and 
+          experiment with engines like Godot and Unity. Meanwhile, my love for music drew me to the world of 
+          <strong>Chiptune</strong>, composing music directly on classic handheld consoles.
+        </p>
+        
+        <p class="lang-es">
+          Creo firmemente que el software artesanal, el pixel art y los videojuegos de alcance reducido pero pulidos 
+          tienen una magia especial que a veces se pierde en las grandes producciones.
+        </p>
+        <p class="lang-en">
+          I firmly believe that handcrafted software, pixel art, and small-scope yet polished games carry a 
+          special magic that sometimes gets lost in large-scale productions.
+        </p>
+      </div>
+    </div>
+
+    <div class="sidebar-boxes">
+      <div class="pixel-box interests-box">
+        <h3>
+          <span class="lang-es">Intereses</span>
+          <span class="lang-en">Interests</span>
+        </h3>
+        <ul class="interests-list">
+          <li>
+            <strong>Retro-Engineering:</strong>
+            <span class="lang-es">Creación de juegos para hardware antiguo (Game Boy, NES, PICO-8).</span>
+            <span class="lang-en">Game development for vintage hardware (Game Boy, NES, PICO-8).</span>
+          </li>
+          <li>
+            <strong>Música Limitada:</strong>
+            <span class="lang-es">Composición con rastreadores (trackers) de sonido como LSDj y DefleMask.</span>
+            <span class="lang-en">Composition using sound trackers like LSDj and DefleMask.</span>
+          </li>
+          <li>
+            <strong>Diseño Geométrico:</strong>
+            <span class="lang-es">Pixel art enfocado en líneas duras, simetría y paletas de color reducidas.</span>
+            <span class="lang-en">Pixel art focused on hard lines, symmetry, and restricted color palettes.</span>
+          </li>
+          <li>
+            <strong>Godot Engine:</strong>
+            <span class="lang-es">Mi motor principal para el desarrollo de juegos independientes modernos.</span>
+            <span class="lang-en">My primary engine for modern indie game development.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="pixel-box setup-box">
+        <h3>
+          <span class="lang-es">El Laboratorio</span>
+          <span class="lang-en">The Lab</span>
+        </h3>
+        <p class="setup-desc">
+          <span class="lang-es">Herramientas que uso a diario:</span>
+          <span class="lang-en">Tools I use daily:</span>
+        </p>
+        <div class="tools-grid">
+          <span class="badge">Godot 4</span>
+          <span class="badge">Aseprite</span>
+          <span class="badge">LSDj</span>
+          <span class="badge">VS Code</span>
+          <span class="badge">Famitracker</span>
+          <span class="badge">Astro</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .about-main-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2.5rem;
+  }
+
+  .avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    border-bottom: 2px dashed var(--color-border);
+    padding-bottom: 2rem;
+  }
+
+  .about-avatar {
+    width: 140px;
+    height: 140px;
+    image-rendering: pixelated;
+    filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.4));
+  }
+
+  .bio-text h2 {
+    font-size: 1.3rem;
+    color: var(--color-accent-yellow);
+    margin-bottom: 1rem;
+  }
+
+  .bio-text p {
+    font-size: 1.05rem;
+    color: var(--color-text);
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+  }
+
+  .bio-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .sidebar-boxes {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .interests-box h3,
+  .setup-box h3 {
+    font-size: 1.1rem;
+    color: var(--color-accent-yellow);
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed var(--color-border);
+    padding-bottom: 0.5rem;
+  }
+
+  .interests-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .interests-list li {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    position: relative;
+    padding-left: 1.25rem;
+  }
+
+  .interests-list li::before {
+    content: "▪";
+    position: absolute;
+    left: 0;
+    top: -1px;
+    color: var(--color-accent-green);
+    font-size: 1rem;
+  }
+
+  .interests-list li strong {
+    color: var(--color-text);
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  .setup-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .tools-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 900px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .about-main-box {
+      padding: 1.5rem;
+    }
+  }
+</style>

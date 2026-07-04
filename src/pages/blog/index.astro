@@ -1,0 +1,63 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+
+// Sort posts by date descending
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+
+<Layout 
+  title="Blog — Cactus Byte Studio" 
+  title_en="Blog — Cactus Byte Studio"
+  description="Bitácora de desarrollo y reflexiones de un desarrollador de videojuegos indie."
+  description_en="Development log and thoughts from an indie game developer."
+>
+  <h1 class="section-title">
+    <span class="lang-es">Nuestra Bitácora</span>
+    <span class="lang-en">Our Logbook</span>
+  </h1>
+  
+  <p class="section-intro">
+    <span class="lang-es">Reflexiones sobre diseño de juegos, música, pixel art y el día a día en un estudio de desarrollo unipersonal.</span>
+    <span class="lang-en">Reflections on game design, music, pixel art, and the day-to-day life of a solo developer.</span>
+  </p>
+
+  {sortedPosts.length > 0 ? (
+    <div class="grid-3">
+      {sortedPosts.map((post) => (
+        <Card
+          title={post.data.title}
+          title_en={post.data.title_en}
+          description={post.data.description}
+          description_en={post.data.description_en}
+          image={post.data.heroImage || "/images/logo.png"}
+          url={`/blog/${post.id}`}
+          tags={post.data.tags}
+        />
+      ))}
+    </div>
+  ) : (
+    <div class="pixel-box empty-state">
+      <p class="lang-es">Aún no se han escrito artículos en el blog. ¡Volvé pronto!</p>
+      <p class="lang-en">No blog posts written yet. Check back soon!</p>
+    </div>
+  )}
+</Layout>
+
+<style>
+  .section-intro {
+    font-size: 1.05rem;
+    color: var(--color-text-muted);
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 3rem;
+  }
+</style>

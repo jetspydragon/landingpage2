@@ -1,0 +1,128 @@
+---
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  title_en?: string;
+  description?: string;
+  description_en?: string;
+}
+
+const { 
+  title = "Cactus Byte Studio — Indie Game Dev & Chiptune Music", 
+  title_en = "Cactus Byte Studio — Indie Game Dev & Chiptune Music",
+  description = "Sitio oficial de Cactus Byte Studio. Desarrollo de videojuegos independientes, producción de música chiptune y bitácoras de proyectos (devlogs).",
+  description_en = "Official website of Cactus Byte Studio. Indie game development, chiptune music production, and project devlogs."
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <script is:inline>
+      (function() {
+        const savedLang = localStorage.getItem('language');
+        const browserLang = navigator.language.startsWith('en') ? 'en' : 'es';
+        const activeLang = savedLang || browserLang;
+        document.documentElement.className = 'lang-' + activeLang;
+        document.documentElement.setAttribute('lang', activeLang);
+        
+        window.addEventListener('DOMContentLoaded', () => {
+          updateMetaAndMarkdown(activeLang);
+        });
+        
+        window.addEventListener('language-changed', (e) => {
+          updateMetaAndMarkdown(e.detail.language);
+        });
+
+        function updateMetaAndMarkdown(lang) {
+          const metaTitle = document.getElementById('meta-title');
+          if (metaTitle) {
+            const translatedTitle = metaTitle.getAttribute('data-' + lang);
+            if (translatedTitle) document.title = translatedTitle;
+          }
+          
+          const metaDesc = document.getElementById('meta-desc');
+          if (metaDesc) {
+            const translatedDesc = metaDesc.getAttribute('data-' + lang);
+            if (translatedDesc) metaDesc.setAttribute('content', translatedDesc);
+          }
+          
+          const containers = document.querySelectorAll('.content-multilang');
+          containers.forEach(container => {
+            const children = Array.from(container.children);
+            const hasDivider = children.some(child => child.tagName === 'HR');
+            
+            if (!hasDivider) {
+              children.forEach(child => child.style.display = '');
+              return;
+            }
+            
+            let show = (lang === 'es');
+            children.forEach(child => {
+              if (child.tagName === 'HR') {
+                show = (lang === 'en');
+                child.style.display = 'none';
+                return;
+              }
+              child.style.display = show ? '' : 'none';
+            });
+          });
+        }
+      })();
+    </script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Primary Meta Tags -->
+    <title id="meta-title" data-es={title} data-en={title_en}>{title}</title>
+    <meta id="meta-desc" name="description" content={description} data-es={description} data-en={description_en} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/images/logo.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content="/images/logo.png" />
+  </head>
+  <body>
+    <Navigation />
+    
+    <main class="main-content container">
+      <slot />
+    </main>
+    
+    <Footer />
+  </body>
+</html>
+
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .main-content {
+    flex-grow: 1;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+</style>

@@ -1,0 +1,311 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import { formatDate } from '../../utils/date';
+
+export async function getStaticPaths() {
+  const games = await getCollection('games');
+  return games.map(game => ({
+    params: { slug: game.id },
+    props: { game },
+  }));
+}
+
+const { game } = Astro.props;
+const { Content } = await render(game);
+---
+
+<Layout 
+  title={`${game.data.title} — Videojuegos — Cactus Byte Studio`} 
+  title_en={`${game.data.title_en || game.data.title} — Games — Cactus Byte Studio`} 
+  description={game.data.description}
+  description_en={game.data.description_en}
+>
+  <div class="game-navigation">
+    <a href="/juegos" class="back-link">
+      <span class="arrow">←</span>
+      <span class="lang-es">Volver a Juegos</span>
+      <span class="lang-en">Back to Games</span>
+    </a>
+  </div>
+
+  <article class="pixel-box game-detail-box">
+    <header class="game-header">
+      <div class="game-meta">
+        <span class="badge warning">
+          <span class="lang-es">Lanzamiento: {formatDate(game.data.publishDate)}</span>
+          <span class="lang-en">Release: {formatDate(game.data.publishDate)}</span>
+        </span>
+        <span class="badge success">
+          <span class="lang-es">{game.data.status}</span>
+          <span class="lang-en">{game.data.status === 'Publicado' ? 'Published' : game.data.status === 'En Desarrollo' ? 'In Development' : game.data.status}</span>
+        </span>
+      </div>
+      <h1 class="game-title">
+        <span class="lang-es">{game.data.title}</span>
+        <span class="lang-en">{game.data.title_en || game.data.title}</span>
+      </h1>
+    </header>
+
+    <div class="game-grid-layout">
+      {game.data.coverImage && (
+        <div class="game-cover-wrapper">
+          <img src={game.data.coverImage} alt={game.data.title} class="game-cover" />
+        </div>
+      )}
+
+      <div class="game-info-panel pixel-box">
+        <h3>
+          <span class="lang-es">Ficha Técnica</span>
+          <span class="lang-en">Tech Sheet</span>
+        </h3>
+        <ul class="info-list">
+          <li>
+            <strong>
+              <span class="lang-es">Plataformas:</span>
+              <span class="lang-en">Platforms:</span>
+            </strong> {game.data.platforms.join(', ')}
+          </li>
+          <li>
+            <strong>
+              <span class="lang-es">Estado:</span>
+              <span class="lang-en">Status:</span>
+            </strong>
+            <span class="lang-es">{game.data.status}</span>
+            <span class="lang-en">{game.data.status === 'Publicado' ? 'Published' : game.data.status === 'En Desarrollo' ? 'In Development' : game.data.status}</span>
+          </li>
+          <li>
+            <strong>
+              <span class="lang-es">Publicación:</span>
+              <span class="lang-en">Published:</span>
+            </strong> {formatDate(game.data.publishDate)}
+          </li>
+        </ul>
+        <div class="action-buttons">
+          <a href={game.data.itchUrl} target="_blank" rel="noopener noreferrer" class="btn btn-play">
+            <span class="lang-es">Jugar en itch.io</span>
+            <span class="lang-en">Play on itch.io</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-content content-multilang">
+      <Content />
+    </div>
+
+    {game.data.screenshots && game.data.screenshots.length > 0 && (
+      <div class="game-screenshots-section">
+        <h3 class="gallery-title">
+          <span class="lang-es">Capturas de Pantalla</span>
+          <span class="lang-en">Screenshots</span>
+        </h3>
+        <div class="screenshots-grid">
+          {game.data.screenshots.map((img, index) => (
+            <div class="screenshot-item pixel-box">
+              <img src={img} alt={`Captura de pantalla ${index + 1} de ${game.data.title}`} class="screenshot-img" />
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </article>
+</Layout>
+
+<style>
+  .game-navigation {
+    margin-bottom: 2rem;
+  }
+
+  .back-link {
+    font-family: var(--font-pixel);
+    font-size: 0.85rem;
+    color: var(--color-accent-green);
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .back-link:hover {
+    color: var(--color-accent-yellow);
+  }
+
+  .game-detail-box {
+    padding: 3rem;
+    background-color: var(--color-panel);
+  }
+
+  .game-header {
+    margin-bottom: 2rem;
+    border-bottom: 2px dashed var(--color-border);
+    padding-bottom: 2rem;
+  }
+
+  .game-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .game-title {
+    font-size: 1.8rem;
+    color: var(--color-accent-yellow);
+    line-height: 1.3;
+  }
+
+  .game-grid-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .game-grid-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .game-detail-box {
+      padding: 1.5rem;
+    }
+    .game-title {
+      font-size: 1.4rem;
+    }
+  }
+
+  .game-cover-wrapper {
+    width: 100%;
+    max-height: 350px;
+    overflow: hidden;
+    border: var(--border-width) solid var(--color-border);
+    background-color: var(--color-bg);
+  }
+
+  .game-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+  }
+
+  .game-info-panel {
+    background-color: var(--color-bg);
+    padding: 1.5rem;
+    box-shadow: none;
+  }
+
+  .game-info-panel h3 {
+    font-size: 1rem;
+    color: var(--color-accent-yellow);
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed var(--color-border);
+    padding-bottom: 0.5rem;
+  }
+
+  .info-list {
+    list-style: none;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-list li {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-muted);
+  }
+
+  .info-list li strong {
+    color: var(--color-text);
+  }
+
+  .btn-play {
+    width: 100%;
+    background-color: var(--color-accent-green);
+    color: var(--color-text-dark);
+    border-color: var(--color-accent-green);
+  }
+
+  .btn-play:hover {
+    background-color: var(--color-accent-yellow);
+    color: var(--color-text-dark);
+    border-color: var(--color-accent-yellow);
+  }
+
+  .game-content {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-text);
+  }
+
+  .game-content :global(p) {
+    margin-bottom: 1.5rem;
+  }
+
+  .game-content :global(h3) {
+    color: var(--color-accent-yellow);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .game-content :global(ul) {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .game-content :global(li) {
+    margin-bottom: 0.5rem;
+    color: var(--color-text-muted);
+  }
+
+  .game-content :global(img) {
+    max-width: 100%;
+    height: auto;
+    border: var(--border-width) solid var(--color-border);
+    box-shadow: var(--pixel-shadow);
+    margin: 1.5rem 0;
+    display: block;
+    image-rendering: pixelated;
+  }
+
+  .game-screenshots-section {
+    margin-top: 3rem;
+    border-top: 2px dashed var(--color-border);
+    padding-top: 2rem;
+  }
+
+  .gallery-title {
+    font-size: 1.1rem;
+    color: var(--color-accent-yellow);
+    margin-bottom: 1.5rem;
+    font-family: var(--font-pixel);
+  }
+
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .screenshot-item {
+    padding: 0;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+  }
+
+  .screenshot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+    transition: transform 0.2s ease;
+  }
+
+  .screenshot-item:hover .screenshot-img {
+    transform: scale(1.05);
+  }
+</style>

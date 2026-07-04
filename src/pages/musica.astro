@@ -1,0 +1,190 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { formatDate } from '../utils/date';
+
+const tracks = await getCollection('music');
+
+// Sort music by releaseDate descending
+const sortedTracks = tracks.sort((a, b) => b.data.releaseDate.getTime() - a.data.releaseDate.getTime());
+---
+
+<Layout 
+  title="Música — Cactus Byte Studio" 
+  title_en="Music — Cactus Byte Studio"
+  description="Producción de música chiptune y bandas sonoras originales compuestas por Cactus Byte Studio."
+  description_en="Chiptune music production and original soundtracks composed by Cactus Byte Studio."
+>
+  <h1 class="section-title">
+    <span class="lang-es">Producción Musical</span>
+    <span class="lang-en">Music Production</span>
+  </h1>
+
+  <p class="section-intro">
+    <span class="lang-es">Composiciones retro hechas con hardware real (como Game Boy clásica corriendo LSDj) y sintetizadores. Escuchá las pistas directamente acá o visitá mi página de Bandcamp.</span>
+    <span class="lang-en">Retro compositions made with real hardware (like a classic Game Boy running LSDj) and synthesizers. Listen to the tracks directly here or visit my Bandcamp page.</span>
+  </p>
+
+  {sortedTracks.length > 0 ? (
+    <div class="music-list">
+      {sortedTracks.map((item) => (
+        <article class="pixel-box music-item-box">
+          <div class="music-details">
+            <div class="music-cover-wrapper">
+              <a href={`/musica/${item.id}`}>
+                <img src={item.data.coverImage} alt={item.data.title} class="music-cover" />
+              </a>
+            </div>
+            
+            <div class="music-info-text">
+              <span class="badge warning">{formatDate(item.data.releaseDate)}</span>
+              <h2 class="music-title">
+                <a href={`/musica/${item.id}`}>
+                  <span class="lang-es">{item.data.title}</span>
+                  <span class="lang-en">{item.data.title_en || item.data.title}</span>
+                </a>
+              </h2>
+              <p class="music-description">
+                <span class="lang-es">{item.data.description}</span>
+                <span class="lang-en">{item.data.description_en || item.data.description}</span>
+              </p>
+              
+              <div class="music-links">
+                <a href={`/musica/${item.id}`} class="btn">
+                  <span class="lang-es">Ver Detalles y Composición</span>
+                  <span class="lang-en">View Details & Composition</span>
+                </a>
+                <a href={item.data.linkUrl} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                  <span class="lang-es">Bandcamp</span>
+                  <span class="lang-en">Bandcamp</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          {item.data.embedUrl && (
+            <div class="music-player-wrapper">
+              <iframe 
+                style="border: 0; width: 100%; height: 120px;" 
+                src={item.data.embedUrl} 
+                loading="lazy"
+                title={`Reproductor para ${item.data.title}`}
+              >
+              </iframe>
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  ) : (
+    <div class="pixel-box empty-state">
+      <p class="lang-es">Aún no se han subido pistas musicales. ¡Volvé pronto!</p>
+      <p class="lang-en">No music tracks uploaded yet. Check back soon!</p>
+    </div>
+  )}
+</Layout>
+
+<style>
+  .section-intro {
+    font-size: 1.05rem;
+    color: var(--color-text-muted);
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  .music-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .music-item-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .music-details {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .music-cover-wrapper {
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+    border: var(--border-width) solid var(--color-border);
+    background-color: var(--color-bg);
+  }
+
+  .music-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+  }
+
+  .music-info-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    flex-grow: 1;
+  }
+
+  .music-title {
+    font-size: 1.2rem;
+    margin-top: 0.25rem;
+  }
+
+  .music-title a {
+    color: var(--color-accent-yellow);
+  }
+
+  .music-title a:hover {
+    color: var(--color-accent-green);
+  }
+
+  .music-description {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+
+  .music-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .music-player-wrapper {
+    width: 100%;
+    border: var(--border-width) solid var(--color-border);
+    background-color: var(--color-bg);
+    overflow: hidden;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .music-details {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .music-info-text {
+      align-items: center;
+    }
+
+    .music-item-box {
+      padding: 1.5rem;
+    }
+  }
+</style>

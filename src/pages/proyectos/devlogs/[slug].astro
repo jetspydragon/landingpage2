@@ -1,0 +1,231 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import { formatDate } from '../../../utils/date';
+
+export async function getStaticPaths() {
+  const devlogs = await getCollection('devlogs');
+  return devlogs.map(log => ({
+    params: { slug: log.id },
+    props: { log },
+  }));
+}
+
+const { log } = Astro.props;
+const { Content } = await render(log);
+
+// Fetch project title for breadcrumbs/navigation
+const projects = await getCollection('projects');
+const associatedProject = projects.find(p => p.id === log.data.project);
+---
+
+<Layout 
+  title={`${log.data.title} — Devlog — Cactus Byte Studio`} 
+  title_en={`${log.data.title_en || log.data.title} — Devlog — Cactus Byte Studio`}
+  description={log.data.summary}
+  description_en={log.data.summary_en}
+>
+  <div class="devlog-navigation">
+    {associatedProject ? (
+      <a href={`/proyectos/${associatedProject.id}`} class="back-link">
+        <span class="arrow">←</span>
+        <span class="lang-es">Volver a {associatedProject.data.title}</span>
+        <span class="lang-en">Back to {associatedProject.data.title_en || associatedProject.data.title}</span>
+      </a>
+    ) : (
+      <a href="/proyectos" class="back-link">
+        <span class="arrow">←</span>
+        <span class="lang-es">Volver a Proyectos</span>
+        <span class="lang-en">Back to Projects</span>
+      </a>
+    )}
+  </div>
+
+  <article class="pixel-box devlog-article">
+    <header class="devlog-header">
+      <div class="devlog-meta">
+        <span class="badge warning">{formatDate(log.data.date)}</span>
+        {associatedProject && (
+          <span class="badge success">
+            <span class="lang-es">Proyecto: {associatedProject.data.title}</span>
+            <span class="lang-en">Project: {associatedProject.data.title_en || associatedProject.data.title}</span>
+          </span>
+        )}
+      </div>
+      
+      <h1 class="devlog-title">
+        <span class="lang-es">{log.data.title}</span>
+        <span class="lang-en">{log.data.title_en || log.data.title}</span>
+      </h1>
+      <p class="devlog-summary">
+        <span class="lang-es">{log.data.summary}</span>
+        <span class="lang-en">{log.data.summary_en || log.data.summary}</span>
+      </p>
+    </header>
+
+    {log.data.image && (
+      <div class="devlog-hero-image-wrapper">
+        <img src={log.data.image} alt={log.data.title} class="devlog-hero-image" />
+      </div>
+    )}
+
+    <div class="devlog-content content-multilang">
+      <Content />
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .devlog-navigation {
+    margin-bottom: 2rem;
+  }
+
+  .back-link {
+    font-family: var(--font-pixel);
+    font-size: 0.85rem;
+    color: var(--color-accent-green);
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .back-link:hover {
+    color: var(--color-accent-yellow);
+  }
+
+  .devlog-article {
+    padding: 3rem;
+    background-color: var(--color-panel);
+  }
+
+  .devlog-header {
+    margin-bottom: 2rem;
+    border-bottom: 2px dashed var(--color-border);
+    padding-bottom: 2rem;
+  }
+
+  .devlog-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .devlog-title {
+    font-size: 1.6rem;
+    color: var(--color-accent-yellow);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .devlog-summary {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  .devlog-hero-image-wrapper {
+    width: 100%;
+    max-height: 400px;
+    overflow: hidden;
+    border: var(--border-width) solid var(--color-border);
+    margin-bottom: 3rem;
+    background-color: var(--color-bg);
+  }
+
+  .devlog-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+  }
+
+  /* Style markdown content inside devlog-content */
+  .devlog-content {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-text);
+  }
+
+  .devlog-content :global(p) {
+    margin-bottom: 1.5rem;
+  }
+
+  .devlog-content :global(h2), 
+  .devlog-content :global(h3) {
+    color: var(--color-accent-yellow);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .devlog-content :global(h2) {
+    font-size: 1.25rem;
+    border-bottom: 1px dashed var(--color-border);
+    padding-bottom: 0.5rem;
+  }
+
+  .devlog-content :global(h3) {
+    font-size: 1.05rem;
+  }
+
+  .devlog-content :global(ul), 
+  .devlog-content :global(ol) {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .devlog-content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .devlog-content :global(strong) {
+    color: var(--color-accent-yellow);
+  }
+
+  .devlog-content :global(code) {
+    font-family: var(--font-mono);
+    background-color: var(--color-bg);
+    color: var(--color-accent-green);
+    padding: 0.2rem 0.4rem;
+    border: 1px solid var(--color-border);
+    font-size: 0.9em;
+  }
+
+  .devlog-content :global(pre) {
+    background-color: var(--color-bg) !important;
+    border: var(--border-width) solid var(--color-border);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+  }
+
+  .devlog-content :global(pre code) {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  .devlog-content :global(blockquote) {
+    border-left: var(--border-width) solid var(--color-accent-green);
+    background-color: rgba(140, 168, 141, 0.05);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .devlog-article {
+      padding: 1.5rem;
+    }
+    
+    .devlog-title {
+      font-size: 1.3rem;
+    }
+  }
+</style>

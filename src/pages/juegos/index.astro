@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
+import { getCollection } from 'astro:content';
+
+const games = await getCollection('games');
+
+// Sort games by publishDate descending
+const sortedGames = games.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+---
+
+<Layout 
+  title="Juegos — Cactus Byte Studio" 
+  title_en="Games — Cactus Byte Studio"
+  description="Catálogo de videojuegos independientes desarrollados por Cactus Byte Studio. Disponibles para jugar en itch.io."
+  description_en="Catalog of indie games developed by Cactus Byte Studio. Available to play on itch.io."
+>
+  <h1 class="section-title">
+    <span class="lang-es">Nuestros Juegos</span>
+    <span class="lang-en">Our Games</span>
+  </h1>
+  
+  <p class="section-intro">
+    <span class="lang-es">Explora nuestros títulos publicados. Hacé click en cualquier tarjeta para visitar la página de descarga y jugarlo en itch.io.</span>
+    <span class="lang-en">Explore our published titles. Click on any card to visit the download page and play it on itch.io.</span>
+  </p>
+
+  {sortedGames.length > 0 ? (
+    <div class="grid-2">
+      {sortedGames.map((game) => (
+        <Card
+          title={game.data.title}
+          title_en={game.data.title_en}
+          description={game.data.description}
+          description_en={game.data.description_en}
+          image={game.data.coverImage}
+          url={`/juegos/${game.id}`}
+          tags={game.data.platforms}
+          status={game.data.status}
+          status_en={game.data.status === 'Publicado' ? 'Published' : game.data.status === 'En Desarrollo' ? 'In Development' : game.data.status}
+          statusType="success"
+          external={false}
+        />
+      ))}
+    </div>
+  ) : (
+    <div class="pixel-box empty-state">
+      <p class="lang-es">Aún no se han registrado juegos en el catálogo. ¡Volvé pronto!</p>
+      <p class="lang-en">No games registered in the catalog yet. Check back soon!</p>
+    </div>
+  )}
+</Layout>
+
+<style>
+  .section-intro {
+    font-size: 1.05rem;
+    color: var(--color-text-muted);
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 3rem;
+  }
+</style>

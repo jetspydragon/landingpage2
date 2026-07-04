@@ -1,0 +1,359 @@
+---
+const pathname = new URL(Astro.request.url).pathname;
+const currentPath = pathname.replace(/\/$/, ""); // remove trailing slash
+
+const navLinks = [
+  { href: "/", labelEs: "Inicio", labelEn: "Home" },
+  { href: "/acerca-de", labelEs: "Acerca de", labelEn: "About" },
+  { href: "/juegos", labelEs: "Juegos", labelEn: "Games" },
+  { href: "/proyectos", labelEs: "Proyectos", labelEn: "Projects" },
+  { href: "/musica", labelEs: "Música", labelEn: "Music" },
+  { href: "/blog", labelEs: "Blog", labelEn: "Blog" },
+];
+---
+
+<header class="main-header">
+  <div class="container header-container">
+    <a href="/" class="logo-link">
+      <img src="/images/logo.png" alt="Cactus Byte Studio Logo" class="nav-logo" />
+      <span class="logo-text">Cactus Byte Studio</span>
+    </a>
+    
+    <nav class="nav-menu" id="navMenu">
+      {navLinks.map(({ href, labelEs, labelEn }) => {
+        const isActive = currentPath === href || (href !== "/" && currentPath.startsWith(href));
+        return (
+          <a 
+            href={href} 
+            class={`nav-link ${isActive ? 'active' : ''}`}
+          >
+            <span class="bracket-open">[</span>
+            <span class="lang-es label-text">{labelEs}</span>
+            <span class="lang-en label-text">{labelEn}</span>
+            <span class="bracket-close">]</span>
+          </a>
+        );
+      })}
+    </nav>
+
+    <div class="header-actions">
+      <button id="langToggle" class="lang-toggle-btn" aria-label="Cambiar idioma">
+        <span class="lang-es">
+          <svg class="flag-icon" viewBox="0 0 20 13" width="16" height="10" style="image-rendering: pixelated; vertical-align: middle; margin-right: 4px;">
+            <rect width="20" height="13" fill="#74acdf"/>
+            <rect y="4.33" width="20" height="4.33" fill="#ffffff"/>
+            <circle cx="10" cy="6.5" r="1.2" fill="#f6b40e"/>
+          </svg>
+          ES
+        </span>
+        <span class="lang-en">
+          <svg class="flag-icon" viewBox="0 0 20 15" width="16" height="12" style="image-rendering: pixelated; vertical-align: middle; margin-right: 4px;">
+            <rect width="20" height="15" fill="#bd3d44"/>
+            <rect y="1.15" width="20" height="1.15" fill="#fff"/>
+            <rect y="3.46" width="20" height="1.15" fill="#fff"/>
+            <rect y="5.77" width="20" height="1.15" fill="#fff"/>
+            <rect y="8.08" width="20" height="1.15" fill="#fff"/>
+            <rect y="10.38" width="20" height="1.15" fill="#fff"/>
+            <rect y="12.69" width="20" height="1.15" fill="#fff"/>
+            <rect width="10" height="8.08" fill="#192f5d"/>
+            <circle cx="2" cy="2" r="0.5" fill="#fff"/>
+            <circle cx="4" cy="2" r="0.5" fill="#fff"/>
+            <circle cx="6" cy="2" r="0.5" fill="#fff"/>
+            <circle cx="8" cy="2" r="0.5" fill="#fff"/>
+            <circle cx="3" cy="4" r="0.5" fill="#fff"/>
+            <circle cx="5" cy="4" r="0.5" fill="#fff"/>
+            <circle cx="7" cy="4" r="0.5" fill="#fff"/>
+            <circle cx="2" cy="6" r="0.5" fill="#fff"/>
+            <circle cx="4" cy="6" r="0.5" fill="#fff"/>
+            <circle cx="6" cy="6" r="0.5" fill="#fff"/>
+            <circle cx="8" cy="6" r="0.5" fill="#fff"/>
+          </svg>
+          EN
+        </span>
+      </button>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .main-header {
+    background-color: var(--color-panel);
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-accent-yellow);
+    font-family: var(--font-pixel);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+  }
+
+  .logo-link:hover {
+    color: var(--color-accent-green);
+  }
+
+  .nav-logo {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+  }
+
+  .logo-text {
+    letter-spacing: 0.05em;
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-left: auto; /* Push the menu and actions to the right */
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0; /* Keep size constant so it doesn't move */
+  }
+
+  .lang-toggle-btn {
+    font-family: var(--font-pixel);
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+    border: var(--border-width) solid var(--color-border);
+    background-color: var(--color-panel);
+    color: var(--color-accent-yellow);
+    cursor: pointer;
+    box-shadow: var(--pixel-shadow);
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: transform 0.1s steps(4), box-shadow 0.1s steps(4);
+  }
+
+  .lang-toggle-btn:hover {
+    border-color: var(--color-accent-green);
+    box-shadow: var(--pixel-shadow-hover);
+    transform: translate(-1px, -1px);
+  }
+
+  .lang-toggle-btn:active {
+    box-shadow: var(--pixel-shadow-active);
+    transform: translate(1px, 1px);
+  }
+
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: var(--border-width) solid var(--color-border);
+    background-color: var(--color-panel);
+    box-shadow: var(--pixel-shadow);
+    cursor: pointer;
+    width: 42px;
+    height: 42px;
+    position: relative;
+    padding: 0;
+  }
+
+  .menu-toggle:hover {
+    border-color: var(--color-accent-green);
+    box-shadow: var(--pixel-shadow-hover);
+    transform: translate(-2px, -2px);
+  }
+
+  .menu-toggle:active {
+    box-shadow: var(--pixel-shadow-active);
+    transform: translate(2px, 2px);
+  }
+
+  .menu-toggle .bar {
+    display: block;
+    position: absolute;
+    left: 7px;
+    width: 22px;
+    height: 4px;
+    background-color: var(--color-accent-yellow);
+    transition: transform 0.2s steps(4), opacity 0.2s steps(4), background-color 0.2s steps(4);
+  }
+
+  /* Position the bars vertically */
+  .menu-toggle .bar:nth-child(1) {
+    top: 9px;
+  }
+  .menu-toggle .bar:nth-child(2) {
+    top: 16px;
+  }
+  .menu-toggle .bar:nth-child(3) {
+    top: 23px;
+  }
+
+  /* Open state for hamburger animation */
+  .menu-toggle.is-open .bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .menu-toggle.is-open .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .menu-toggle.is-open .bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .nav-link {
+    font-family: var(--font-pixel);
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+  }
+
+  .nav-link .bracket-open,
+  .nav-link .bracket-close {
+    opacity: 0;
+    transition: opacity 0.15s steps(4), color 0.15s steps(4);
+    color: var(--color-accent-green);
+  }
+
+  .nav-link:hover, 
+  .nav-link.active {
+    color: var(--color-accent-yellow);
+  }
+
+  .nav-link:hover .bracket-open,
+  .nav-link:hover .bracket-close,
+  .nav-link.active .bracket-open,
+  .nav-link.active .bracket-close {
+    opacity: 1;
+  }
+
+  .nav-link.active .label-text {
+    color: var(--color-accent-yellow);
+    text-shadow: 0 0 4px rgba(230, 223, 184, 0.3);
+  }
+
+  @media (max-width: 768px) {
+    .header-container {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .logo-link {
+      order: 1;
+    }
+
+    .header-actions {
+      order: 2;
+    }
+    
+    .menu-toggle {
+      display: flex;
+    }
+
+    .nav-menu {
+      order: 3;
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: var(--color-panel);
+      border-bottom: var(--border-width) solid var(--color-border);
+      box-shadow: 0px 6px 0px 0px rgba(0, 0, 0, 0.4);
+      padding: 1rem 1.5rem;
+      gap: 0.5rem;
+      margin-left: 0;
+      z-index: 99;
+    }
+
+    .nav-menu.is-open {
+      display: flex;
+    }
+
+    .nav-link {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 0.75rem 1rem;
+      border-left: var(--border-width) solid transparent;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      border-left-color: var(--color-accent-green);
+      background-color: var(--color-panel-hover);
+    }
+  }
+</style>
+
+<script>
+  // Mobile child menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const navMenu = document.getElementById('navMenu');
+
+  if (menuToggle && navMenu) {
+    menuToggle.addEventListener('click', () => {
+      const isOpen = navMenu.classList.toggle('is-open');
+      menuToggle.classList.toggle('is-open');
+      menuToggle.setAttribute('aria-expanded', isOpen.toString());
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (!menuToggle.contains(target) && !navMenu.contains(target) && !document.getElementById('langToggle')?.contains(target)) {
+        navMenu.classList.remove('is-open');
+        menuToggle.classList.remove('is-open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close menu when clicking a link
+    const navLinks = navMenu.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('is-open');
+        menuToggle.classList.remove('is-open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // Language persistent switch
+  const langToggle = document.getElementById('langToggle');
+  if (langToggle) {
+    langToggle.addEventListener('click', () => {
+      const isEnglish = document.documentElement.classList.contains('lang-en');
+      const newLang = isEnglish ? 'es' : 'en';
+      
+      document.documentElement.className = 'lang-' + newLang;
+      document.documentElement.setAttribute('lang', newLang);
+      localStorage.setItem('language', newLang);
+      
+      window.dispatchEvent(new CustomEvent('language-changed', { detail: { language: newLang } }));
+    });
+  }
+</script>

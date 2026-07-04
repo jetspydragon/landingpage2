@@ -1,0 +1,79 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('projects');
+
+// Sort projects by startDate descending
+const sortedProjects = projects.sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+
+// Helper to map status to card status type
+function getStatusType(status: string): 'success' | 'warning' | 'default' {
+  switch (status) {
+    case 'En Desarrollo':
+    case 'Completado':
+      return 'success';
+    case 'Planificación':
+    case 'Pausado':
+      return 'warning';
+    default:
+      return 'default';
+  }
+}
+---
+
+<Layout 
+  title="Proyectos — Cactus Byte Studio" 
+  title_en="Projects — Cactus Byte Studio"
+  description="Bitácora de proyectos y desarrollos activos de Cactus Byte Studio. Seguir hitos y avances de nuestros videojuegos."
+  description_en="Logbook of active and planned projects by Cactus Byte Studio. Follow game development milestones."
+>
+  <h1 class="section-title">
+    <span class="lang-es">Nuestros Proyectos</span>
+    <span class="lang-en">Our Projects</span>
+  </h1>
+  
+  <p class="section-intro">
+    <span class="lang-es">Bitácora de proyectos en desarrollo y planificación. Hacé click en cualquier proyecto para ver su ficha técnica y la <strong>línea de tiempo de hitos (devlog)</strong> con todo su proceso.</span>
+    <span class="lang-en">Logbook of active and planned projects. Click on any project to view its tech sheet and the <strong>milestone timeline (devlog)</strong> with all its process.</span>
+  </p>
+
+  {sortedProjects.length > 0 ? (
+    <div class="grid-2">
+      {sortedProjects.map((project) => (
+        <Card
+          title={project.data.title}
+          title_en={project.data.title_en}
+          description={project.data.description}
+          description_en={project.data.description_en}
+          image={project.data.coverImage}
+          url={`/proyectos/${project.id}`}
+          status={project.data.status}
+          status_en={project.data.status === 'Planificación' ? 'Planning' : project.data.status === 'En Desarrollo' ? 'In Development' : project.data.status === 'Pausado' ? 'Paused' : project.data.status === 'Completado' ? 'Completed' : project.data.status}
+          statusType={getStatusType(project.data.status)}
+        />
+      ))}
+    </div>
+  ) : (
+    <div class="pixel-box empty-state">
+      <p class="lang-es">No hay proyectos registrados en este momento. ¡Volvé pronto!</p>
+      <p class="lang-en">No projects registered at this moment. Check back soon!</p>
+    </div>
+  )}
+</Layout>
+
+<style>
+  .section-intro {
+    font-size: 1.05rem;
+    color: var(--color-text-muted);
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 3rem;
+  }
+</style>

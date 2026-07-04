@@ -1,0 +1,153 @@
+---
+interface Props {
+  title: string;
+  title_en?: string;
+  description: string;
+  description_en?: string;
+  image: string;
+  url: string;
+  tags?: string[];
+  status?: string;
+  status_en?: string;
+  statusType?: 'success' | 'warning' | 'default';
+  external?: boolean;
+}
+
+const { 
+  title, 
+  title_en,
+  description, 
+  description_en,
+  image, 
+  url, 
+  tags = [], 
+  status, 
+  status_en,
+  statusType = 'default',
+  external = false 
+} = Astro.props;
+
+const target = external ? "_blank" : "_self";
+const rel = external ? "noopener noreferrer" : undefined;
+---
+
+<article class="pixel-box interactive card-box">
+  <a href={url} target={target} rel={rel} class="card-link-wrapper">
+    <div class="card-image-wrapper">
+      <img src={image} alt={title} class="card-image" loading="lazy" />
+      {status && (
+        <span class={`card-status-badge badge ${statusType === 'success' ? 'success' : statusType === 'warning' ? 'warning' : ''}`}>
+          <span class="lang-es">{status}</span>
+          <span class="lang-en">{status_en || status}</span>
+        </span>
+      )}
+    </div>
+    
+    <div class="card-content">
+      <h3 class="card-title">
+        <span class="lang-es">{title}</span>
+        <span class="lang-en">{title_en || title}</span>
+      </h3>
+      <p class="card-description">
+        <span class="lang-es">{description}</span>
+        <span class="lang-en">{description_en || description}</span>
+      </p>
+      
+      {tags.length > 0 && (
+        <div class="card-tags">
+          {tags.map(tag => (
+            <span class="badge">{tag}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  </a>
+</article>
+
+<style>
+  .card-box {
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-link-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+  }
+
+  .card-link-wrapper:hover {
+    color: inherit; /* Prevent changing color of text in whole card on hover */
+  }
+
+  .card-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    background-color: var(--color-bg);
+    border-bottom: var(--border-width) solid var(--color-border);
+    overflow: hidden;
+  }
+
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+    transition: transform 0.3s ease;
+  }
+
+  .card-box:hover .card-image {
+    transform: scale(1.05);
+  }
+
+  .card-status-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 10;
+    font-size: 0.6rem;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+  }
+
+  .card-content {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-accent-yellow);
+    line-height: 1.3;
+    transition: color 0.2s ease;
+  }
+
+  .card-box:hover .card-title {
+    color: var(--color-accent-green);
+  }
+
+  .card-description {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: auto;
+  }
+</style>

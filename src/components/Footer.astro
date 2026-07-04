@@ -1,0 +1,106 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="main-footer">
+  <div class="container footer-container">
+    <div class="footer-info">
+      <p class="studio-name">Cactus Byte Studio</p>
+      <p class="copyright">
+        <span class="lang-es">© {currentYear} — Todos los derechos reservados.</span>
+        <span class="lang-en">© {currentYear} — All rights reserved.</span>
+      </p>
+      <p class="built-with">
+        <span class="lang-es">Compilado estáticamente con <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span>
+        <span class="lang-en">Statically compiled with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span>
+      </p>
+    </div>
+    
+    <div class="footer-links">
+      <a href="https://cactusbytestudio.itch.io" target="_blank" rel="noopener" class="footer-social-link">
+        <span class="bracket">[</span>itch.io<span class="bracket">]</span>
+      </a>
+      <a href="https://cactusbytestudio.bandcamp.com" target="_blank" rel="noopener" class="footer-social-link">
+        <span class="bracket">[</span>bandcamp<span class="bracket">]</span>
+      </a>
+      <a href="https://github.com" target="_blank" rel="noopener" class="footer-social-link">
+        <span class="bracket">[</span>github<span class="bracket">]</span>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .main-footer {
+    background-color: var(--color-bg);
+    border-top: var(--border-width) dashed var(--color-border);
+    padding: 3rem 0;
+    margin-top: 5rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .studio-name {
+    font-family: var(--font-pixel);
+    color: var(--color-accent-yellow);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+
+  .copyright {
+    margin-bottom: 0.25rem;
+  }
+
+  .built-with {
+    font-size: 0.8rem;
+  }
+
+  .built-with a {
+    text-decoration: underline;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .footer-social-link {
+    font-family: var(--font-pixel);
+    font-size: 0.8rem;
+    color: var(--color-accent-green);
+    text-transform: uppercase;
+  }
+
+  .footer-social-link .bracket {
+    color: var(--color-border);
+    transition: color 0.2s ease;
+  }
+
+  .footer-social-link:hover {
+    color: var(--color-accent-yellow);
+  }
+
+  .footer-social-link:hover .bracket {
+    color: var(--color-accent-yellow);
+  }
+
+  @media (max-width: 600px) {
+    .footer-container {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .footer-links {
+      justify-content: center;
+    }
+  }
+</style>
